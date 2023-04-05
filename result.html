@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Kết quả tìm kiếm</title>
+  </head>
+  <body>
+    <h1>Kết quả tìm kiếm</h1>
+    <p>{{ air_data }}</p>
+  </body>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+	<script type='text/javascript'>
+        var map;
+        var directionsManager;
+        var trafficManager;
+
+        function GetMap()
+        {
+            map = new Microsoft.Maps.Map('#myMap', {});
+
+
+            //Load the directions module.
+            Microsoft.Maps.loadModule('Microsoft.Maps.Directions', function () {
+                //Create an instance of the directions manager.
+                directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+
+                //Specify where to display the route instructions.
+                directionsManager.setRenderOptions({ itineraryContainer: '#directionsItinerary' });
+
+                //Specify the where to display the input panel
+                directionsManager.showInputPanel('directionsPanel');
+                //calculate direction
+                directionsManager.calculateDirections();
+            });
+            //Load traffic module.
+            Microsoft.Maps.loadModule('Microsoft.Maps.Traffic', function () {
+                //Create an instance of the traffic manager and bind to map.
+                trafficManager = new Microsoft.Maps.Traffic.TrafficManager(map);
+                //Display the traffic data.
+                trafficManager.show();
+            });
+            Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', function () {
+                var manager = new Microsoft.Maps.AutosuggestManager({ map: map });
+                manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
+            });
+        }
+        function selectedSuggestion(result) {
+            //Remove previously selected suggestions from the map.
+            map.entities.clear();
+            //Show the suggestion as a pushpin and center map over it.
+            var pin = new Microsoft.Maps.Pushpin(result.location);
+            map.entities.push(pin);
+            map.setView({ bounds: result.bestView });
+        }
+    </script>
+    <style>
+        html, body{
+            padding:0;
+            margin:0;
+            height:100%;
+        }
+
+        .directionsContainer{
+            width:380px;
+            height:100%;
+            overflow-y:auto;
+            float:left;
+        }
+
+        #myMap{
+            position:relative;
+            width:calc(100% - 380px);
+            height:100%;
+            float:left;
+        }
+    </style>
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AtEMO7JqvIrYPvX2_NAeiOU8-SwP_-vlUoI6IHnbukr_MgE-cmkuQfbXvdpDqsBd' async defer></script>
+</head>
+<body>
+    <div class="directionsContainer">
+        <div id="directionsPanel"></div>
+        <div id="directionsItinerary"></div>
+    </div>
+    <div id="myMap"></div>
+</body>
+
+
+</html>
